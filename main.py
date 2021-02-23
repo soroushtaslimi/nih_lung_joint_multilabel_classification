@@ -137,7 +137,7 @@ if args.dataset == 'cifar100':
 
 if args.dataset == 'nih':
     input_channel = 1
-    num_classes = 2
+    num_classes = 14
     init_epoch = 0
     filter_outlier = True
     args.epoch_decay_start = 80
@@ -228,13 +228,21 @@ def main():
     # evaluate models with random weights
     test_acc1, test_acc2, test_auc1, test_auc2 = model.evaluate(test_loader)
 
-    print(
+    """print(
         'Epoch [%d/%d] Test Accuracy on the %s test images: Model1 %.4f %%, Model2 %.4f %%' % (
-            epoch + 1, args.n_epoch, len(test_dataset), test_acc1, test_acc2))
+            epoch + 1, args.n_epoch, len(test_dataset), test_acc1, test_acc2))"""
+    print(
+        'Epoch [%d/%d] Test Accuracy on the %s test images:' % (
+            epoch + 1, args.n_epoch, len(test_dataset)))
+    print('Model1 AUCs:', test_auc1)
+    print('Model1 mean AUC:', sum(test_auc1)/len(test_auc1))
+    print('Model2 AUCs:', test_auc2)
+    print('Model2 mean AUC:', sum(test_auc2)/len(test_auc2))
+    """
     print(
         'Epoch [%d/%d] Test AUC on the %s test images: Model1 %.4f, Model2 %.4f ' % (
             epoch + 1, args.n_epoch, len(test_dataset), test_auc1, test_auc2))
-
+    """
     """
     aucs = model.roc_auc(test_dataset, args)
     print('AUCs:', aucs)
@@ -265,23 +273,31 @@ def main():
                     epoch + 1, args.n_epoch, len(test_dataset), test_acc1, test_acc2, mean_pure_ratio1,
                     mean_pure_ratio2))
         """
-
+        print(
+            'Epoch [%d/%d] Test Accuracy on the %s test images:' % (
+                epoch + 1, args.n_epoch, len(test_dataset)))
+        print('Model1 AUCs:', test_auc1)
+        print('Model1 mean AUC:', sum(test_auc1)/len(test_auc1))
+        print('Model2 AUCs:', test_auc2)
+        print('Model2 mean AUC:', sum(test_auc2)/len(test_auc2))
+        """
         print(
                 'Epoch [%d/%d] Test Accuracy on the %s test images: Model1 %.4f %%, Model2 %.4f %%' % (
                     epoch + 1, args.n_epoch, len(test_dataset), test_acc1, test_acc2))
         print(
         'Epoch [%d/%d] Test AUC on the %s test images: Model1 %.4f, Model2 %.4f ' % (
             epoch + 1, args.n_epoch, len(test_dataset), test_auc1, test_auc2))
+        """
 
         if epoch % args.save_epoch == 0:
             save_models(model, epoch)
 
-        if epoch >= 190:
-            acc_list.extend([test_acc1, test_acc2])
+        # if epoch >= 190:
+        #     acc_list.extend([test_acc1, test_acc2])
 
-    avg_acc = sum(acc_list)/len(acc_list)
-    print(len(acc_list))
-    print("the average acc in last 10 epochs: {}".format(str(avg_acc)))
+    # avg_acc = sum(acc_list)/len(acc_list)
+    # print(len(acc_list))
+    # print("the average acc in last 10 epochs: {}".format(str(avg_acc)))
 
 
 if __name__ == '__main__':

@@ -22,8 +22,10 @@ def loss_jocor(y_1, y_2, t, forget_rate, ind, noise_or_not=None, co_lambda=0.1, 
     if class_weights is not None:
         class_weights = torch.FloatTensor(class_weights).cuda()
 
-    loss_pick_1 = F.cross_entropy(y_1, t, reduction='none', weight=class_weights) * (1-co_lambda)
-    loss_pick_2 = F.cross_entropy(y_2, t, reduction='none', weight=class_weights) * (1-co_lambda)
+    # loss_pick_1 = F.cross_entropy(y_1, t, reduction='none', weight=class_weights) * (1-co_lambda)
+    # loss_pick_2 = F.cross_entropy(y_2, t, reduction='none', weight=class_weights) * (1-co_lambda)
+    loss_pick_1 = F.binary_cross_entropy_with_logits(y_1, t, reduction='none', weight=class_weights) * (1-co_lambda)
+    loss_pick_2 = F.binary_cross_entropy_with_logits(y_2, t, reduction='none', weight=class_weights) * (1-co_lambda)
     loss_pick = (loss_pick_1 + loss_pick_2 + co_lambda * kl_loss_compute(y_1, y_2,reduce=False) + co_lambda * kl_loss_compute(y_2, y_1, reduce=False)).cpu()
 
 

@@ -1,3 +1,4 @@
+import torch
 import torchvision
 from torchvision.datasets import DatasetFolder, ImageFolder, VisionDataset
 
@@ -83,7 +84,6 @@ class MyDatasetFolder(VisionDataset):
     def __init__(
             self,
             root: str,
-            class_name: str,
             csv_path: str,
             loader: Callable[[str], Any],
             extensions: Optional[Tuple[str, ...]] = None,
@@ -103,7 +103,7 @@ class MyDatasetFolder(VisionDataset):
         class_to_idx[class_name] = 1
         """
         # samples = self.make_dataset(self.root, class_to_idx, extensions, is_valid_file)
-        samples = self.make_custom_dataset(self.root, csv_path, class_name)
+        samples = self.make_custom_dataset(self.root, csv_path)
         if len(samples) == 0:
             msg = "Found 0 files in subfolders of: {}\n".format(self.root)
             if extensions is not None:
@@ -122,12 +122,11 @@ class MyDatasetFolder(VisionDataset):
     def make_custom_dataset(
         directory: str,
         csv_path: str,
-        class_name: str,
     ) -> List[Tuple[str, int]]:
         df = pd.read_csv(csv_path)
         image_paths = directory + df['Image Index'].values
-        labels = df[class_name].values.astype(int)
-        return list(zip(image_paths, labels))
+        labels = df.iloc[:, 1:].values.astype(int)
+        return [(x, torch.from_numpy(y)) for (x, y) in list(zip(image_paths, labels))]
 
     @staticmethod
     def make_dataset(
@@ -204,14 +203,13 @@ class MyImageFolder(MyDatasetFolder):
     def __init__(
             self,
             root: str,
-            class_name: str,
             csv_path: str,
             transform: Optional[Callable] = None,
             target_transform: Optional[Callable] = None,
             loader: Callable[[str], Any] = default_loader,
             is_valid_file: Optional[Callable[[str], bool]] = None,
     ):
-        super(MyImageFolder, self).__init__(root, class_name, csv_path, loader, IMG_EXTENSIONS if is_valid_file is None else None,
+        super(MyImageFolder, self).__init__(root, csv_path, loader, IMG_EXTENSIONS if is_valid_file is None else None,
                                           transform=transform,
                                           target_transform=target_transform,
                                           is_valid_file=is_valid_file)

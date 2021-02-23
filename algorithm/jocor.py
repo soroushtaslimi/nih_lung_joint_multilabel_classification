@@ -20,11 +20,14 @@ class JoCoR:
         self.num_classes = num_classes
         self.num_test_samples = num_test_samples
 
+        """
         # only correct when targets are 0 and 1
         for x in train_dataset.targets:
             assert x == 0 or x == 1
         w1 = sum(train_dataset.targets)/len(train_dataset.targets)
         self.class_weights = [1/(1-w1), 1/w1]
+        """
+        self.class_weights = None
         
 
         # Hyper Parameters
@@ -98,14 +101,15 @@ class JoCoR:
 
     def evaluate_model(self, test_loader, model):
         model.eval()  # Change model to 'eval' mode.
-        correct = 0
-        total = 0
+        # correct = 0
+        # total = 0
         # all_outputs = np.empty((0, self.num_classes), float)
         # all_labels = np.empty((0, ), int)
 
-        # all_outputs = np.empty((self.num_test_samples, self.num_classes), float)
-        all_outputs = np.empty((self.num_test_samples, ), float)
-        all_labels = np.empty((self.num_test_samples, ), int)
+        all_outputs = np.empty((self.num_test_samples, self.num_classes), float)
+        all_labels = np.empty((self.num_test_samples, self.num_classes), int)
+        # all_outputs = np.empty((self.num_test_samples, ), float)
+        # all_labels = np.empty((self.num_test_samples, ), int)
 
         cur_ind = 0
 
@@ -113,20 +117,23 @@ class JoCoR:
             images = Variable(images).to(self.device)
             logits = model(images)
             outputs = F.softmax(logits, dim=1)
-            _, pred = torch.max(outputs.data, 1)
-            total += labels.size(0)
-            correct += (pred.cpu() == labels).sum()
+            # _, pred = torch.max(outputs.data, 1)
+            # total += labels.size(0)
+            # correct += (pred.cpu() == labels).sum()
 
             # all_outputs = np.append(all_outputs, outputs.cpu().detach().numpy(), axis=0)
             # all_labels = np.append(all_labels, labels.cpu().detach().numpy())
-            # all_outputs[cur_ind:cur_ind+len(labels), :] = outputs.cpu().detach().numpy()
-            all_outputs[cur_ind:cur_ind+len(labels)] = outputs.cpu().detach().numpy()[:,1]
-            all_labels[cur_ind:cur_ind+len(labels)] = labels.cpu().detach().numpy()
+
+            all_outputs[cur_ind:cur_ind+len(labels), :] = outputs.cpu().detach().numpy()
+            all_labels[cur_ind:cur_ind+len(labels), :] = labels.cpu().detach().numpy()
+            # all_outputs[cur_ind:cur_ind+len(labels)] = outputs.cpu().detach().numpy()[:,1]
+            # all_labels[cur_ind:cur_ind+len(labels)] = labels.cpu().detach().numpy()
             cur_ind += len(labels)
         
         assert cur_ind == self.num_test_samples
-        acc = 100 * float(correct) / float(total)
-        auc = roc_auc_score(all_labels, all_outputs)  # alloutputs for multiLabel classification, alloutputs[:, 1] for binary
+        # acc = 100 * float(correct) / float(total)
+        acc = 0.0
+        auc = roc_auc_score(all_labels, all_outputs, average=None)  # alloutputs for multiLabel classification, alloutputs[:, 1] for binary
         return acc, auc
 
 
