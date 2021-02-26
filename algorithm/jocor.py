@@ -117,7 +117,7 @@ class JoCoR:
             images = Variable(images).to(self.device)
             logits = model(images)
             # outputs = F.softmax(logits, dim=1)  # for crossentropy loss
-            outputs = F.sigmoid(logits)  # for BCEloss
+            outputs = torch.sigmoid(logits)  # for BCEloss
 
             # _, pred = torch.max(outputs.data, 1)
             # total += labels.size(0)
