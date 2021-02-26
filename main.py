@@ -15,14 +15,14 @@ from data.custom_image_folder import MyImageFolder
 parser = argparse.ArgumentParser()
 parser.add_argument('--lr', type=float, default=0.001)
 parser.add_argument('--result_dir', type=str, help='dir to save result txt files', default='results')
-parser.add_argument('--noise_rate', type=float, help='corruption rate, should be less than 1', default=0.2)
+parser.add_argument('--noise_rate', type=float, help='corruption rate, should be less than 1', default=0.0)
 parser.add_argument('--forget_rate', type=float, help='forget rate', default=None)
-parser.add_argument('--noise_type', type=str, help='[pairflip, symmetric, asymmetric]', default='pairflip')
+parser.add_argument('--noise_type', type=str, help='[pairflip, symmetric, asymmetric] or clean', default='clean')
 parser.add_argument('--num_gradual', type=int, default=10,
                     help='how many epochs for linear drop rate, can be 5, 10, 15. This parameter is equal to Tk for R(T) in Co-teaching paper.')
 parser.add_argument('--exponent', type=float, default=1,
                     help='exponent of the forget rate, can be 0.5, 1, 2. This parameter is equal to c in Tc for R(T) in Co-teaching paper.')
-parser.add_argument('--dataset', type=str, help='mnist, cifar10, or cifar100', default='mnist')
+parser.add_argument('--dataset', type=str, help='mnist, cifar10, cifar100, nih', default='nih')
 parser.add_argument('--n_epoch', type=int, default=1000)
 parser.add_argument('--seed', type=int, default=1)
 parser.add_argument('--print_freq', type=int, default=50)
