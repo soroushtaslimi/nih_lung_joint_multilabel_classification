@@ -24,8 +24,18 @@ def loss_jocor(y_1, y_2, t, forget_rate, ind, noise_or_not=None, co_lambda=0.1, 
 
     # loss_pick_1 = F.cross_entropy(y_1, t, reduction='none', weight=class_weights) * (1-co_lambda)
     # loss_pick_2 = F.cross_entropy(y_2, t, reduction='none', weight=class_weights) * (1-co_lambda)
+    t = t.type_as(y_1)  # for bceloss type of t should be float
     loss_pick_1 = F.binary_cross_entropy_with_logits(y_1, t, reduction='none', weight=class_weights) * (1-co_lambda)
     loss_pick_2 = F.binary_cross_entropy_with_logits(y_2, t, reduction='none', weight=class_weights) * (1-co_lambda)
+    loss_pick_1 = torch.mean(loss_pick_1, dim=1)
+    loss_pick_2 = torch.mean(loss_pick_2, dim=1)
+    """
+    print('t.shape, y_1.shape, y_2.shape:', t.shape, y_1.shape, y_2.shape)
+    print('loss_pick_1.shape:', loss_pick_1.shape)
+    print('loss_pick_2.shape:', loss_pick_2.shape)
+    print('kl_loss_compute(y_1, y_2,reduce=False).shape:', kl_loss_compute(y_1, y_2,reduce=False).shape)
+    print('kl_loss_compute(y_2, y_1,reduce=False).shape:', kl_loss_compute(y_2, y_1,reduce=False).shape)
+    """
     loss_pick = (loss_pick_1 + loss_pick_2 + co_lambda * kl_loss_compute(y_1, y_2,reduce=False) + co_lambda * kl_loss_compute(y_2, y_1, reduce=False)).cpu()
 
 

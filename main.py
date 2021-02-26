@@ -144,8 +144,8 @@ if args.dataset == 'nih':
     args.model_type = "resnet"
 
     data_path = '/mnt/sda1/project/nih-preprocess/Dataset/'  # TODO isnert data path
-    train_data_path = data_path + 'train2/'
-    test_data_path = data_path + 'test2/'
+    train_data_path = data_path + 'train2_cropped/'
+    test_data_path = data_path + 'test2_cropped/'
 
     train_csv_path = '../processed_data_csv/train_without_nofinding.csv'
     test_csv_path = '../processed_data_csv/test_without_nofinding.csv'
