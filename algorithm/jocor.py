@@ -179,10 +179,10 @@ class JoCoR:
         if self.adjust_lr == 1:
             self.adjust_learning_rate(self.optimizer, epoch)
 
-        train_total = 0
-        train_correct = 0
-        train_total2 = 0
-        train_correct2 = 0
+        # train_total = 0
+        # train_correct = 0
+        # train_total2 = 0
+        # train_correct2 = 0
         pure_ratio_1_list = []
         pure_ratio_2_list = []
 
@@ -198,14 +198,14 @@ class JoCoR:
 
             # Forward + Backward + Optimize
             logits1 = self.model1(images)
-            prec1 = accuracy(logits1, labels, topk=(1,))
-            train_total += 1
-            train_correct += prec1
+            # prec1 = accuracy(logits1, labels, topk=(1,))
+            # train_total += 1
+            # train_correct += prec1
 
             logits2 = self.model2(images)
-            prec2 = accuracy(logits2, labels, topk=(1,))
-            train_total2 += 1
-            train_correct2 += prec2
+            # prec2 = accuracy(logits2, labels, topk=(1,))
+            # train_total2 += 1
+            # train_correct2 += prec2
 
             loss_1, loss_2, pure_ratio_1, pure_ratio_2 = self.loss_fn(logits1, logits2, labels, self.rate_schedule[epoch],
                                                                  ind, self.noise_or_not, self.co_lambda, self.class_weights)
@@ -214,26 +214,34 @@ class JoCoR:
             loss_1.backward()
             self.optimizer.step()
 
-            pure_ratio_1_list.append(100 * pure_ratio_1)
-            pure_ratio_2_list.append(100 * pure_ratio_2)
+            # pure_ratio_1_list.append(100 * pure_ratio_1)
+            # pure_ratio_2_list.append(100 * pure_ratio_2)
 
             if (i + 1) % self.print_freq == 0:
-                if self.adjust_lr == 0:
-                    self.scheduler.step(loss_1)
+                """
                 print(
                     'Epoch [%d/%d], Iter [%d/%d] Training Accuracy1: %.4F, Training Accuracy2: %.4f, Loss: %.4f, learning_rate: %.4f'
                     % (epoch + 1, self.n_epoch, i + 1, len(self.train_dataset) // self.batch_size, prec1, prec2,
                        loss_1.data.item(), self.optimizer.param_groups[0]['lr'])
-                )
+                )"""
                 """
                 print(
                     'Epoch [%d/%d], Iter [%d/%d] Training Accuracy1: %.4F, Training Accuracy2: %.4f, Loss1: %.4f, Loss2: %.4f, Pure Ratio1 %.4f %% Pure Ratio2 %.4f %%'
                     % (epoch + 1, self.n_epoch, i + 1, len(self.train_dataset) // self.batch_size, prec1, prec2,
                        loss_1.data.item(), loss_2.data.item(), sum(pure_ratio_1_list) / len(pure_ratio_1_list), sum(pure_ratio_2_list) / len(pure_ratio_2_list)))
                 """
+                print(
+                    'Epoch [%d/%d], Iter [%d/%d], Loss: %.4f, learning_rate: %.4f'
+                    % (epoch + 1, self.n_epoch, i + 1, len(self.train_dataset) // self.batch_size,
+                       loss_1.data.item(), self.optimizer.param_groups[0]['lr'])
+                )
+                if self.adjust_lr == 0:
+                    self.scheduler.step(loss_1)
 
-        train_acc1 = float(train_correct) / float(train_total)
-        train_acc2 = float(train_correct2) / float(train_total2)
+        # train_acc1 = float(train_correct) / float(train_total)
+        # train_acc2 = float(train_correct2) / float(train_total2)
+        train_acc1 = 0.0
+        train_acc2 = 0.0
         return train_acc1, train_acc2, pure_ratio_1_list, pure_ratio_2_list
 
     def adjust_learning_rate(self, optimizer, epoch):

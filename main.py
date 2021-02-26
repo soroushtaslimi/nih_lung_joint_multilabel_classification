@@ -147,8 +147,8 @@ if args.dataset == 'nih':
     train_data_path = data_path + 'train2/'
     test_data_path = data_path + 'test2/'
 
-    train_csv_path = '../processed_data_csv/train.csv'
-    test_csv_path = '../processed_data_csv/test.csv'
+    train_csv_path = '../processed_data_csv/train_without_nofinding.csv'
+    test_csv_path = '../processed_data_csv/test_without_nofinding.csv'
 
     img_transform = transforms.Compose([transforms.Grayscale(),
                                     transforms.Resize((args.nih_img_size, args.nih_img_size)),  
