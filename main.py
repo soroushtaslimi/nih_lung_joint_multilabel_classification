@@ -37,7 +37,7 @@ parser.add_argument('--model_type', type=str, help='[mlp,cnn]', default='cnn')
 parser.add_argument('--save_model', type=str, help='save model?', default="False")
 parser.add_argument('--save_result', type=str, help='save result?', default="True")
 parser.add_argument('--save_epoch', type=int, help='number of epochs between saving models', default=10)
-parser.add_argument('--class_name', type=str, help='class to be used for classification', default='Mass')
+# parser.add_argument('--class_name', type=str, help='class to be used for classification', default='Mass')
 
 parser.add_argument('--nih_img_size', type=int, help='image resized size in nih_lung dataset', default=128)
 
@@ -162,14 +162,12 @@ if args.dataset == 'nih':
 
     train_dataset = MyImageFolder(
         root=train_data_path,
-        class_name=args.class_name,
         csv_path=train_csv_path,
         transform=img_transform
     )
 
     test_dataset = MyImageFolder(
         root=test_data_path,
-        class_name=args.class_name,
         csv_path=test_csv_path,
         transform=img_transform1
     )
@@ -189,7 +187,7 @@ def save_models(model, epoch):
         'optimizer': model.optimizer.state_dict(),
         'scheduler': model.scheduler
     }
-    torch.save(checkpoint, CHECKPOINT_PATH + 'class_name-' + args.class_name +
+    torch.save(checkpoint, CHECKPOINT_PATH + 'resnet34' + 
                                             '_img' + str(args.nih_img_size) + 
                                             '_forget_rate' + str(args.forget_rate) +
                                             '_co_lambda' + str(args.co_lambda) +
