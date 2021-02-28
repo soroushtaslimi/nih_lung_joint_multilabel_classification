@@ -219,7 +219,7 @@ def main():
     # Define models
     print('building model...')
 
-    start_epoch = 1
+    start_epoch = 0
 
     start_checkpoint = None
     if args.cont == 'True' or args.cont == 'true':
@@ -237,10 +237,10 @@ def main():
 
     """print(
         'Epoch [%d/%d] Test Accuracy on the %s test images: Model1 %.4f %%, Model2 %.4f %%' % (
-            start_epoch, args.n_epoch, len(test_dataset), test_acc1, test_acc2))"""
+            start_epoch + 1, args.n_epoch, len(test_dataset), test_acc1, test_acc2))"""
     print(
         'Epoch [%d/%d] Test Accuracy on the %s test images:' % (
-            start_epoch, args.n_epoch, len(test_dataset)))
+            start_epoch + 1, args.n_epoch, len(test_dataset)))
     print('Model1 AUCs:', test_auc1)
     print('Model1 mean AUC:', sum(test_auc1)/len(test_auc1))
     print('Model2 AUCs:', test_auc2)
@@ -248,7 +248,7 @@ def main():
     """
     print(
         'Epoch [%d/%d] Test AUC on the %s test images: Model1 %.4f, Model2 %.4f ' % (
-            start_epoch, args.n_epoch, len(test_dataset), test_auc1, test_auc2))
+            start_epoch + 1, args.n_epoch, len(test_dataset), test_auc1, test_auc2))
     """
     """
     aucs = model.roc_auc(test_dataset, args)
@@ -258,7 +258,7 @@ def main():
 
     acc_list = []
     # training
-    for epoch in range(start_epoch, args.n_epoch):
+    for epoch in range(start_epoch + 1, args.n_epoch):
         # train models
         train_acc1, train_acc2, pure_ratio_1_list, pure_ratio_2_list = model.train(train_loader, epoch)
 
