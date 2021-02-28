@@ -16,7 +16,7 @@ from algorithm.loss import loss_jocor
 
 
 class JoCoR:
-    def __init__(self, args, train_dataset, device, input_channel, num_classes, num_test_samples):
+    def __init__(self, args, train_dataset, device, input_channel, num_classes, num_test_samples, start_checkpoint=None):
         self.num_classes = num_classes
         self.num_test_samples = num_test_samples
 
@@ -97,6 +97,12 @@ class JoCoR:
 
 
         self.adjust_lr = args.adjust_lr
+
+        if start_checkpoint is not None:
+            self.model1.load_state_dict(start_checkpoint['model1'])
+            self.model2.load_state_dict(start_checkpoint['model2'])
+            self.optimizer.load_state_dict(start_checkpoint['optimizer'])
+            self.scheduler = start_checkpoint['scheduler']
 
 
     def evaluate_model(self, test_loader, model):

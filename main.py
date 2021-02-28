@@ -39,11 +39,13 @@ parser.add_argument('--save_result', type=str, help='save result?', default="Tru
 parser.add_argument('--save_epoch', type=int, help='number of epochs between saving models', default=10)
 # parser.add_argument('--class_name', type=str, help='class to be used for classification', default='Mass')
 
+parser.add_argument('--cont', type=str, help='continue from a checkpoint', default="False")
 parser.add_argument('--nih_img_size', type=int, help='image resized size in nih_lung dataset', default=128)
 
 args = parser.parse_args()
 
 CHECKPOINT_PATH = '../Checkpoints/'
+LOAD_PATH = '../Checkpoints/resnet34_img256_forget_rate0.1_co_lambda0.9_epoch20.pth'
 
 # Seed
 torch.manual_seed(args.seed)
@@ -217,9 +219,16 @@ def main():
     # Define models
     print('building model...')
 
-    model = JoCoR(args, train_dataset, device, input_channel, num_classes, len(test_loader) * batch_size)
+    start_epoch = 1
 
-    epoch = 0
+    start_checkpoint = None
+    if args.cont == 'True' or args.cont == 'true':
+        start_checkpoint = torch.load(LOAD_PATH)
+        start_epoch = start_checkpoint['epoch']
+
+    model = JoCoR(args, train_dataset, device, input_channel, num_classes, len(test_loader) * batch_size, start_checkpoint=start_checkpoint)
+
+    
     train_acc1 = 0
     train_acc2 = 0
 
@@ -228,10 +237,10 @@ def main():
 
     """print(
         'Epoch [%d/%d] Test Accuracy on the %s test images: Model1 %.4f %%, Model2 %.4f %%' % (
-            epoch + 1, args.n_epoch, len(test_dataset), test_acc1, test_acc2))"""
+            start_epoch, args.n_epoch, len(test_dataset), test_acc1, test_acc2))"""
     print(
         'Epoch [%d/%d] Test Accuracy on the %s test images:' % (
-            epoch + 1, args.n_epoch, len(test_dataset)))
+            start_epoch, args.n_epoch, len(test_dataset)))
     print('Model1 AUCs:', test_auc1)
     print('Model1 mean AUC:', sum(test_auc1)/len(test_auc1))
     print('Model2 AUCs:', test_auc2)
@@ -239,7 +248,7 @@ def main():
     """
     print(
         'Epoch [%d/%d] Test AUC on the %s test images: Model1 %.4f, Model2 %.4f ' % (
-            epoch + 1, args.n_epoch, len(test_dataset), test_auc1, test_auc2))
+            start_epoch, args.n_epoch, len(test_dataset), test_auc1, test_auc2))
     """
     """
     aucs = model.roc_auc(test_dataset, args)
@@ -249,7 +258,7 @@ def main():
 
     acc_list = []
     # training
-    for epoch in range(1, args.n_epoch):
+    for epoch in range(start_epoch, args.n_epoch):
         # train models
         train_acc1, train_acc2, pure_ratio_1_list, pure_ratio_2_list = model.train(train_loader, epoch)
 
