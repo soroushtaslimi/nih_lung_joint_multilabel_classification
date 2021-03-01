@@ -6,6 +6,7 @@ from torch.autograd import Variable
 # from torchvision import models
 from torch.nn import DataParallel
 from model.resnet import *
+from model.multihead_resnet import Multihead_Resnet
 from sklearn.metrics import roc_auc_score
 
 from model.cnn import MLPNet,CNN
@@ -75,8 +76,10 @@ class JoCoR:
             self.model1 = MLPNet()
             self.model2 = MLPNet()
         elif args.model_type == "resnet":
-            self.model1 = resnet34(num_classes=num_classes)
-            self.model2 = resnet34(num_classes=num_classes)
+            # self.model1 = resnet34(num_classes=num_classes)
+            # self.model2 = resnet34(num_classes=num_classes)
+            self.model1 = Multihead_Resnet(num_classes=num_classes, device=device, head_elements=args.head_elements)
+            self.model2 = Multihead_Resnet(num_classes=num_classes, device=device, head_elements=args.head_elements)
 
         if args.multi_gpu == "True":
             self.model1 = DataParallel(self.model1)

@@ -41,6 +41,7 @@ parser.add_argument('--save_epoch', type=int, help='number of epochs between sav
 
 parser.add_argument('--cont', type=str, help='continue from a checkpoint', default="False")
 parser.add_argument('--nih_img_size', type=int, help='image resized size in nih_lung dataset', default=128)
+parser.add_argument('--head_elements', type=int, help='number of neurons in start of each head', default=28)
 
 args = parser.parse_args()
 
