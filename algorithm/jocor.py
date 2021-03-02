@@ -32,7 +32,7 @@ class JoCoR:
         
 
         # Hyper Parameters
-        self.batch_size = 128
+        self.batch_size = args.batch_size
         learning_rate = args.lr
 
         if args.forget_rate is None:

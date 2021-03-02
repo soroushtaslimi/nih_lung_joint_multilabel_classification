@@ -39,6 +39,7 @@ parser.add_argument('--save_result', type=str, help='save result?', default="Tru
 parser.add_argument('--save_epoch', type=int, help='number of epochs between saving models', default=10)
 # parser.add_argument('--class_name', type=str, help='class to be used for classification', default='Mass')
 
+parser.add_argument('--batch_size', type=int, help='size of each batch', default=128)
 parser.add_argument('--cont', type=str, help='continue from a checkpoint', default="False")
 parser.add_argument('--nih_img_size', type=int, help='image resized size in nih_lung dataset', default=128)
 parser.add_argument('--head_elements', type=int, help='number of neurons in start of each head', default=28)
@@ -60,7 +61,7 @@ else:
     torch.manual_seed(args.seed)
 
 # Hyper Parameters
-batch_size = 128
+batch_size = args.batch_size
 learning_rate = args.lr
 
 # load dataset
