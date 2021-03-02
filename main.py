@@ -195,6 +195,7 @@ def save_models(model, epoch):
                                             '_img' + str(args.nih_img_size) + 
                                             '_forget_rate' + str(args.forget_rate) +
                                             '_co_lambda' + str(args.co_lambda) +
+                                            '_lr' + str(args.lr) +
                                             '_epoch' + str(epoch) + '.pth')
 
 

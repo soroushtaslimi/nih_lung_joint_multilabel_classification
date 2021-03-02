@@ -94,7 +94,7 @@ class JoCoR:
         self.optimizer = torch.optim.Adam(list(self.model1.parameters()) + list(self.model2.parameters()),
                                           lr=learning_rate)
         
-        self.scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(self.optimizer, factor= 0.8, patience=40, mode='min')
+        self.scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(self.optimizer, factor= 0.8, patience=32, mode='min')
 
         self.loss_fn = loss_jocor
 
@@ -242,7 +242,7 @@ class JoCoR:
                        loss_1.data.item(), loss_2.data.item(), sum(pure_ratio_1_list) / len(pure_ratio_1_list), sum(pure_ratio_2_list) / len(pure_ratio_2_list)))
                 """
                 print(
-                    'Epoch [%d/%d], Iter [%d/%d], Loss: %.4f, learning_rate: %.4f'
+                    'Epoch [%d/%d], Iter [%d/%d], Loss: %.6f, learning_rate: %.6f'
                     % (epoch + 1, self.n_epoch, i + 1, len(self.train_dataset) // self.batch_size,
                        loss_1.data.item(), self.optimizer.param_groups[0]['lr'])
                 )
