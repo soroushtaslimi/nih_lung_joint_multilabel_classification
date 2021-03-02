@@ -115,8 +115,12 @@ class JoCoR:
         # all_outputs = np.empty((0, self.num_classes), float)
         # all_labels = np.empty((0, ), int)
 
-        all_outputs = np.empty((self.num_test_samples, self.num_classes), float)
-        all_labels = np.empty((self.num_test_samples, self.num_classes), int)
+        # all_outputs = np.empty((self.num_test_samples, self.num_classes), float)
+        # all_labels = np.empty((self.num_test_samples, self.num_classes), int)
+        
+        all_outputs = torch.zeros(self.num_test_samples, self.num_classes, dtype=torch.float, device=self.device)
+        all_labels = torch.zeros(self.num_test_samples, self.num_classes, dtype=torch.int8, device=self.device)
+        
         # all_outputs = np.empty((self.num_test_samples, ), float)
         # all_labels = np.empty((self.num_test_samples, ), int)
 
@@ -135,14 +139,20 @@ class JoCoR:
             # all_outputs = np.append(all_outputs, outputs.cpu().detach().numpy(), axis=0)
             # all_labels = np.append(all_labels, labels.cpu().detach().numpy())
 
-            all_outputs[cur_ind:cur_ind+len(labels), :] = outputs.cpu().detach().numpy()
-            all_labels[cur_ind:cur_ind+len(labels), :] = labels.cpu().detach().numpy()
+            # all_outputs[cur_ind:cur_ind+len(labels), :] = outputs.cpu().detach().numpy()
+            # all_labels[cur_ind:cur_ind+len(labels), :] = labels.cpu().detach().numpy()
+
+            all_outputs[cur_ind:cur_ind+len(labels), :] = outputs
+            all_labels[cur_ind:cur_ind+len(labels), :] = labels
+
             # all_outputs[cur_ind:cur_ind+len(labels)] = outputs.cpu().detach().numpy()[:,1]
             # all_labels[cur_ind:cur_ind+len(labels)] = labels.cpu().detach().numpy()
             cur_ind += len(labels)
         
         assert cur_ind == self.num_test_samples
         # acc = 100 * float(correct) / float(total)
+        all_outputs = all_outputs.cpu().detach().numpy()
+        all_labels = all_labels.cpu().detach().numpy()
         acc = 0.0
         auc = roc_auc_score(all_labels, all_outputs, average=None)  # alloutputs for multiLabel classification, alloutputs[:, 1] for binary
         return acc, auc

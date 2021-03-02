@@ -9,6 +9,7 @@ import os.path
 from typing import Any, Callable, cast, Dict, List, Optional, Tuple
 
 import pandas as pd
+import numpy as np
 
 IMG_EXTENSIONS = ('.jpg', '.jpeg', '.png', '.ppm', '.bmp', '.pgm', '.tif', '.tiff', '.webp')
 
@@ -125,7 +126,7 @@ class MyDatasetFolder(VisionDataset):
     ) -> List[Tuple[str, int]]:
         df = pd.read_csv(csv_path)
         image_paths = directory + df['Image Index'].values
-        labels = df.iloc[:, 1:].values.astype(int)
+        labels = df.iloc[:, 1:].values.astype(np.int8)
         return [(x, torch.from_numpy(y)) for (x, y) in list(zip(image_paths, labels))]
 
     @staticmethod
