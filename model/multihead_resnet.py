@@ -7,7 +7,7 @@ class Head(nn.Module):
     def __init__(self, head_elements, num_classes=1):
         super().__init__()
         self.fc1 = nn.Linear(head_elements, 256)
-        self.relu = nn.ReLU()
+        self.relu = nn.ReLU(inplace=True)
         self.fc2 = nn.Linear(256, num_classes)
 
     def forward(self, x):
@@ -15,7 +15,6 @@ class Head(nn.Module):
         x = self.relu(x)
         x = self.fc2(x)
         return x
-
 
 
 class Multihead_Resnet(nn.Module):
@@ -28,18 +27,16 @@ class Multihead_Resnet(nn.Module):
         if base_model == 'resnet34':
             self.base_model = resnet34(num_classes=self.base_model_out_size)
 
-        self.relu = nn.ReLU()
+        self.relu = nn.ReLU(inplace=True)
         self.heads = nn.ModuleList([Head(head_elements=head_elements) for i in range(num_classes)])
         
-
-
 
     def forward(self, x):
         x = self.base_model(x)
         x = self.relu(x)
-        y = torch.zeros(x.shape[0], self.num_classes, requires_grad=True).to(self.device)
+        a = []
         for i in range(self.num_classes):
-            y[:, i] = self.heads[i](x[:, i*self.head_elements:i+self.head_elements])
+            a.append(self.heads[i](x[:, i*self.head_elements:i*self.head_elements+self.head_elements]).squeeze())
         
-        return y
+        return torch.stack(a, dim=1)
 
