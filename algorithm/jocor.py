@@ -15,6 +15,7 @@ from common.utils import accuracy
 
 from algorithm.loss import loss_jocor
 
+from torchsummary import summary
 
 class JoCoR:
     def __init__(self, args, train_dataset, device, input_channel, num_classes, num_test_samples, start_checkpoint=None):
@@ -78,8 +79,10 @@ class JoCoR:
         elif args.model_type == "resnet":
             # self.model1 = resnet34(num_classes=num_classes)
             # self.model2 = resnet34(num_classes=num_classes)
-            self.model1 = Multihead_Resnet(num_classes=num_classes, device=device, head_elements=args.head_elements)
-            self.model2 = Multihead_Resnet(num_classes=num_classes, device=device, head_elements=args.head_elements)
+            self.model1 = Multihead_Resnet(num_classes=num_classes, head_elements=args.head_elements)
+            self.model2 = Multihead_Resnet(num_classes=num_classes, head_elements=args.head_elements)
+
+        summary(self.model1, (1, 128, 128))
 
         if args.multi_gpu == "True":
             self.model1 = DataParallel(self.model1)

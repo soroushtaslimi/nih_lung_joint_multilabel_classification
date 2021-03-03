@@ -18,9 +18,8 @@ class Head(nn.Module):
 
 
 class Multihead_Resnet(nn.Module):
-    def __init__(self, num_classes, device, head_elements=28, base_model='resnet34'):
+    def __init__(self, num_classes, head_elements=28, base_model='resnet34'):
         super().__init__()
-        self.device = device
         self.num_classes = num_classes
         self.head_elements = head_elements
         self.base_model_out_size = num_classes * head_elements
