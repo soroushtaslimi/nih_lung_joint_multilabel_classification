@@ -196,6 +196,7 @@ def save_models(model, epoch):
                                             '_forget_rate' + str(args.forget_rate) +
                                             '_co_lambda' + str(args.co_lambda) +
                                             '_lr' + str(args.lr) +
+                                            '_batch' + str(args.batch_size) +
                                             '_epoch' + str(epoch) + '.pth')
 
 
